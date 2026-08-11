@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #08080b;
+  --color-ink-raised: #0e0e12;
+  --color-bone: #e8e4dc;
+  --color-bone-dim: #8b8880;
+  --color-bone-faint: #4a4843;
+  --color-accent: #ff4d1c;
+  --color-accent-dim: #7a2610;
+
+  --font-display: var(--font-display), Georgia, serif;
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  /* One type scale, used everywhere. Fluid between 22rem and 90rem viewports. */
+  --text-micro: 0.6875rem;
+  --text-label: 0.75rem;
+  --text-body: clamp(0.95rem, 0.9rem + 0.25vw, 1.0625rem);
+  --text-lead: clamp(1.15rem, 1rem + 0.75vw, 1.5rem);
+  --text-h3: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
+  --text-h2: clamp(2.25rem, 1.6rem + 3.2vw, 4.5rem);
+  --text-h1: clamp(3rem, 1.5rem + 7.5vw, 10rem);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+:root {
+  color-scheme: dark;
+  --gutter: clamp(1.25rem, 5vw, 6rem);
+  --rule: color-mix(in oklab, var(--color-bone) 12%, transparent);
+}
+
+* {
+  min-width: 0;
+}
+
+html {
+  /* Lenis drives scrolling; native smooth scroll would fight it. */
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.55;
+  letter-spacing: -0.011em;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+/* Focus is visible and on-brand — never removed. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* --- The WebGL ground ------------------------------------------------ */
+
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* The field is the atmosphere, not the subject — it sits under the type. */
+  opacity: 0.95;
+}
+
+/*
+ * Film grain over everything. Static noise at low opacity is what stops a
+ * dark gradient from looking like a cheap gradient; it also masks the banding
+ * additive particles produce on 8-bit displays.
+ */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  will-change: transform;
+  animation: grain-shift 6s steps(6) infinite;
+}
+
+@keyframes grain-shift {
+  0%, 100% { transform: translate(0, 0); }
+  16% { transform: translate(-2%, 1%); }
+  33% { transform: translate(1%, -2%); }
+  50% { transform: translate(-1%, 2%); }
+  66% { transform: translate(2%, 1%); }
+  83% { transform: translate(1%, 1%); }
+}
+
+/*
+ * Two jobs, stacked. The radial hides the canvas edge; the linear lays a scrim
+ * over the left half, where the text column lives. Legible type over a live
+ * particle field doesn't happen by accident — the field has to be held down.
+ */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to right,
+      var(--color-ink) 0%,
+      color-mix(in oklab, var(--color-ink) 82%, transparent) 34%,
+      color-mix(in oklab, var(--color-ink) 30%, transparent) 62%,
+      transparent 100%
+    ),
+    radial-gradient(
+      130% 95% at 50% 45%,
+      transparent 25%,
+      color-mix(in oklab, var(--color-ink) 92%, transparent) 100%
+    );
+}
+
+/* Single-column layouts sit over the middle, so the side scrim would be wrong. */
+@media (max-width: 767px) {
+  .vignette {
+    background:
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--color-ink) 82%, transparent) 0%,
+        color-mix(in oklab, var(--color-ink) 66%, transparent) 100%
+      ),
+      radial-gradient(
+        130% 95% at 50% 45%,
+        transparent 20%,
+        color-mix(in oklab, var(--color-ink) 92%, transparent) 100%
+      );
+  }
+}
+
+/* --- Type & layout utilities ------------------------------------------ */
+
+/*
+ * These live in the components layer on purpose: Tailwind's utilities layer
+ * comes after it, so `text-accent` on a `.label` just works without needing an
+ * important modifier anywhere.
+ */
+@layer components {
+  .label {
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-bone-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+  }
+
+  .numeral {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  /* Hairline rules that read as drawn, not as borders. */
+  .rule {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      var(--rule),
+      color-mix(in oklab, var(--color-bone) 3%, transparent)
+    );
+  }
+
+  .shell {
+    position: relative;
+    z-index: 3;
+  }
+
+  .bleed {
+    padding-inline: var(--gutter);
+  }
+
+  .measure {
+    max-width: 62ch;
+  }
+}
+
+/* --- Reduced motion --------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
