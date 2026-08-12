@@ -1,6 +1,7 @@
 "use client";
 
 import Section from "@/components/ui/Section";
+import Magnetic from "@/components/ui/Magnetic";
 import { Rise, TextReveal } from "@/components/ui/Reveal";
 import { identity } from "@/lib/content";
 
@@ -24,20 +25,22 @@ export default function Contact() {
           <p className="label mb-10">Contact</p>
         </Rise>
 
-        <TextReveal as="h2" className="display text-h2 max-w-[13ch]">
-          Building something that thinks?
+        <TextReveal as="h2" className="display text-h1 max-w-[13ch]">
+          Want to work together?
         </TextReveal>
 
         <Rise delay={0.15}>
-          <a
-            href={`mailto:${identity.email}`}
-            className="group mt-14 inline-block"
-            data-cursor="Write"
-          >
-            <span className="display text-h3 border-b border-bone-faint pb-2 transition-colors duration-500 group-hover:border-accent group-hover:text-accent">
-              {identity.email}
-            </span>
-          </a>
+          <Magnetic radius={140} strength={0.28} className="mt-14">
+            <a
+              href={`mailto:${identity.email}`}
+              className="group inline-block"
+              data-cursor="Write"
+            >
+              <span className="display text-h2 border-b border-bone-faint pb-2 transition-colors duration-500 group-hover:border-accent group-hover:text-accent">
+                {identity.email}
+              </span>
+            </a>
+          </Magnetic>
         </Rise>
       </div>
 
@@ -54,7 +57,7 @@ export default function Contact() {
             <ul className="flex flex-wrap gap-x-10 gap-y-4">
               {links.map((l) => (
                 <li key={l.label}>
-                  <p className="label text-[0.625rem] mb-1">{l.label}</p>
+                  <p className="label text-caption mb-1">{l.label}</p>
                   <a
                     href={l.href}
                     target={l.href.startsWith("http") ? "_blank" : undefined}

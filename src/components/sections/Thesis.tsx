@@ -13,12 +13,12 @@ export default function Thesis() {
       className="bleed py-[18vh] md:py-[24vh]"
     >
       <Rise>
-        <p className="label mb-10">01 — Thesis</p>
+        <p className="label mb-10">About</p>
       </Rise>
 
       <TextReveal
         as="h2"
-        className="display text-h2 max-w-[18ch]"
+        className="display text-h1 max-w-[18ch]"
         stagger={0.035}
       >
         {identity.statement}
@@ -37,7 +37,7 @@ export default function Thesis() {
 
           <div className="grid gap-6 md:grid-cols-12 md:gap-10">
             <Rise className="md:col-span-4">
-              <p className="text-lead leading-snug">
+              <p className="text-h4">
                 {role.role}
                 <br />
                 <span className="text-bone-dim">{role.org}</span>
@@ -51,7 +51,7 @@ export default function Thesis() {
                 {role.points.map((p, i) => (
                   <Rise key={p} delay={i * 0.06}>
                     <li className="flex gap-5">
-                      <span className="numeral mt-1.5 shrink-0 text-micro text-accent">
+                      <span className="numeral mt-1.5 shrink-0 text-caption text-accent">
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       <span className="text-bone-dim measure">{p}</span>

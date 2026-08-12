@@ -14,7 +14,7 @@ export const identity = {
   linkedin: "https://linkedin.com/in/sarmad-ali-3206813a3",
   github: "", // TODO: add if public
   statement:
-    "Full-stack developer moving into AI engineering. I build agent systems, MCP tooling, and LLM infrastructure — and I own them end to end.",
+    "I'm a MERN developer moving into AI engineering. Right now I build agent systems, MCP tooling and LLM infrastructure at CodeNinja.",
 } as const;
 
 /** Formation ids map 1:1 to particle-field geometries in the WebGL scene. */
@@ -54,11 +54,11 @@ export const projects: Project[] = [
     year: "2026",
     formation: "pipeline",
     thesis:
-      "A Chrome extension and WebSocket gateway that hand a locally-hosted AI agent secure control of the browser session you're already signed into.",
+      "A Chrome extension and a WebSocket gateway that let a local AI agent work inside the browser session you're already logged into.",
     body: [
-      "BrowserPilot is a custom Manifest V3 Chrome extension paired with a WebSocket gateway. Together they give a locally-hosted agent secure control of a user's existing authenticated browser session — the agent works inside real, logged-in sessions rather than scraping from the outside or asking for credentials it shouldn't have.",
-      "The lead-generation pipeline is the core of it: discovery through email enrichment through export, built to be resumable. Caching, deduplication, and atomic checkpoints mean a run that dies halfway resumes where it stopped instead of starting over — the difference between a demo and something you actually leave running.",
-      "It also handles receipt OCR and expense reconciliation, with credentials held in AES-256-GCM encrypted storage. The whole system is covered by 204 automated tests.",
+      "I built this as a Manifest V3 Chrome extension with a WebSocket gateway behind it. The agent runs on your own machine and drives the session you're already signed into, so it never needs your passwords and never has to scrape from the outside.",
+      "Lead generation is the main thing it does. Find candidates, enrich them with emails, export the result. I made the pipeline resumable with caching, deduplication and atomic checkpoints, so a run that dies at step four picks up again at step four.",
+      "It also handles receipt OCR and expense reconciliation. Credentials sit in AES-256-GCM encrypted storage. There are 204 tests covering it.",
     ],
     metrics: [
       { value: "204", label: "automated tests" },
@@ -93,11 +93,11 @@ export const projects: Project[] = [
     year: "2026",
     formation: "duallobe",
     thesis:
-      "A TypeScript runtime where switching between a cloud model and a model on your own GPU is a config change — not a rewrite.",
+      "A TypeScript runtime where swapping a cloud model for one on your own GPU is a config change, not a rewrite.",
     body: [
-      "Most LLM code is quietly married to one provider. Sovereign AI Workspace treats the model as a swappable component: configuration-only switching between cloud (OpenAI Codex) and locally-hosted (Ollama/Qwen) backends, with the calling code untouched.",
-      "Making that real meant handling the parts providers implement differently — structured and parallel tool calling, token budgeting, and context-window enforcement — behind one interface. Provider conformance checks verify each backend actually honors the contract rather than trusting it to.",
-      "It also takes governance seriously: audit-safe log redaction, and GPU/memory-sizing utilities so you can tell in advance whether a given model fits the hardware you have. 281 automated tests pass against it.",
+      "Most LLM code ends up tied to whichever provider you started with. I wanted the model to be a part you can swap out, so this runtime moves between OpenAI Codex in the cloud and Ollama or Qwen locally without the calling code changing at all.",
+      "The work was in the parts every provider does slightly differently: structured and parallel tool calls, token budgeting, context window limits. Those sit behind one interface now, and conformance checks verify each backend actually does what it claims instead of taking its word for it.",
+      "It redacts logs so they're safe to audit, and ships GPU and memory sizing utilities so you can tell whether a model fits your hardware before downloading it. 281 tests pass against it.",
     ],
     metrics: [
       { value: "281", label: "passing tests" },
@@ -130,11 +130,11 @@ export const projects: Project[] = [
     year: "2026",
     formation: "fanout",
     thesis:
-      "An MCP server that turns a folder of listing photos into a generated video walkthrough — seven tools, fire-and-poll, no database.",
+      "An MCP server that turns a folder of listing photos into a video walkthrough. Seven tools, no database.",
     body: [
-      "WalkGen is a backend MCP server built around a seven-tool, fire-and-poll architecture: the client kicks off long-running generation and polls for completion, rather than holding a connection open through a multi-minute render.",
-      "Image-to-video generation runs through Kling via Replicate, feeding a custom ffmpeg pipeline that handles stitching, transitions, and frame-accurate timing. A room-aware \"shot grammar\" decides how a given space should be moved through — a kitchen and a hallway don't get the same camera treatment.",
-      "Storage is a self-healing filesystem layer with no database dependency at all. Less to run, less to break, and state that you can inspect by looking at a directory.",
+      "WalkGen is a backend MCP server built around seven tools and a fire-and-poll flow. The client starts a job and polls for the result, rather than holding a connection open for the several minutes a render takes.",
+      "Image to video runs through Kling on Replicate. A custom ffmpeg pipeline then stitches the clips together and handles transitions and frame-accurate timing. A room-aware shot grammar decides how to move through each space, because a kitchen and a hallway don't want the same camera move.",
+      "Storage is just the filesystem with a self-healing layer on top, no database anywhere. Less to run, and you can check on a job by opening a folder.",
     ],
     metrics: [
       { value: "7", label: "MCP tools" },
@@ -161,10 +161,10 @@ export const experience = [
     period: "Jun 2026 — Present",
     location: "Lahore, Pakistan",
     points: [
-      "Working across front-end and back-end on CodeNinja's internal Performance Management System, an employee performance-tracking platform.",
-      "Matured the platform's MCP tool coverage — adding refined tools and introducing an ontology layer to structure the domain model.",
-      "Led workflow enhancements and system-design improvements to streamline performance-tracking operations.",
-      "Conducted testing across internal tooling, including Shikamaru, the company's project-management platform.",
+      "I work across the front end and back end of CodeNinja's internal Performance Management System, the tool the company uses to track employee performance.",
+      "I built out the platform's MCP tool coverage, adding more precise tools and introducing an ontology layer to give the domain model some structure.",
+      "I led workflow and system design improvements to make performance tracking less painful to run.",
+      "I also test across the company's internal tooling, including Shikamaru, their project management platform.",
     ],
   },
   {
@@ -173,8 +173,8 @@ export const experience = [
     period: "Jan 2025 · 1 month",
     location: "Punjab, Pakistan",
     points: [
-      "Worked alongside the development team on E-Pay Punjab, a Government of Punjab payments platform, in a hands-on mentorship-style internship.",
-      "Learned and applied core Java programming under the guidance of senior developers.",
+      "I worked with the development team on E-Pay Punjab, a Government of Punjab payments platform, in a mentorship-style internship.",
+      "I learned core Java on the job, with senior developers reviewing what I wrote.",
     ],
   },
   {
@@ -183,8 +183,8 @@ export const experience = [
     period: "2024",
     location: "Pakistan",
     points: [
-      "Resolved complex technical queries, improving customer satisfaction and retention rates.",
-      "Streamlined communication channels for faster response times.",
+      "I handled complex technical queries from customers, which helped both satisfaction and retention.",
+      "I tidied up the communication channels so responses went out faster.",
     ],
   },
 ];

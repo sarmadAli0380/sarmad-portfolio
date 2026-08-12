@@ -113,20 +113,37 @@ void main() {
   );
   pos += drift * (0.16 + energy * 0.6) * uTurbulence;
 
-  // Pointer pushes the field away with a soft gaussian falloff.
+  /*
+   * Pointer pushes the field away with a soft gaussian falloff, plus a slight
+   * tangential swirl so the displaced particles curl around the cursor instead
+   * of just sliding outward. The wider falloff means the interaction is felt
+   * across a good part of the field rather than only where the cursor sits.
+   */
   vec3 delta = pos - uPointer;
   float dist = length(delta);
-  pos += normalize(delta + 1e-5) * uPointerStrength * exp(-dist * dist * 0.28);
+  // Radius ~2.5 units against a field ~3 across. Wider than this and hovering
+  // anywhere near turns the whole form inside out instead of denting it.
+  float influence = exp(-dist * dist * 0.26);
+  vec3 away = normalize(delta + 1e-5);
+  vec3 swirl = normalize(cross(away, vec3(0.0, 0.0, 1.0)) + 1e-5);
+  pos += (away + swirl * 0.45) * uPointerStrength * influence;
+
+  // Particles caught in the cursor's field brighten with it.
+  float pointerHeat = influence;
 
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
   gl_Position = projectionMatrix * mv;
 
-  float size = uSize * (0.45 + aSeed.y * 0.9) * (1.0 + energy * 0.85);
+  // Morphing and cursor proximity both count as excitement: whichever is
+  // stronger drives size and colour, so the field visibly answers the pointer.
+  float excite = max(energy, pointerHeat);
+
+  float size = uSize * (0.45 + aSeed.y * 0.9) * (1.0 + excite * 0.85);
   gl_PointSize = size * uPixelRatio * (30.0 / max(-mv.z, 0.1));
   gl_PointSize *= smoothstep(0.0, 0.35, uReveal);
 
   vSeed = aSeed.z;
-  vEnergy = energy;
+  vEnergy = excite;
   vDepth = -mv.z;
 }
 `;

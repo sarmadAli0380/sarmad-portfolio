@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import Section from "@/components/ui/Section";
+import Magnetic from "@/components/ui/Magnetic";
 import { identity } from "@/lib/content";
 import { ease } from "@/lib/theme";
 import { useStore } from "@/lib/store";
@@ -46,7 +47,7 @@ export default function Hero() {
         Portfolio — {new Date().getFullYear()}
       </motion.p>
 
-      <h1 className="display text-h1 my-auto max-w-[16ch]">
+      <h1 className="display text-display my-auto max-w-[16ch]">
         {lines.map((l, i) => (
           <span key={l} className="block overflow-hidden pb-[0.06em]">
             <motion.span
@@ -71,7 +72,7 @@ export default function Hero() {
       >
         <div>
           <p className="label mb-2">Built by</p>
-          <p className="text-lead">
+          <p className="text-body-large">
             {identity.name}
             <span className="text-bone-dim">
               {" "}
@@ -80,16 +81,18 @@ export default function Hero() {
           </p>
         </div>
 
-        <a
-          href="#thesis"
-          className="label group flex items-center gap-3 text-bone"
-          data-cursor="Scroll"
-        >
-          Enter
-          <span className="relative block h-8 w-px overflow-hidden bg-bone-faint">
-            <span className="absolute inset-x-0 top-0 h-3 animate-[drop_2.4s_var(--ease-in-out-expo)_infinite] bg-accent" />
-          </span>
-        </a>
+        <Magnetic radius={110}>
+          <a
+            href="#thesis"
+            className="label group flex items-center gap-3 text-bone"
+            data-cursor="Scroll"
+          >
+            Enter
+            <span className="relative block h-8 w-px overflow-hidden bg-bone-faint">
+              <span className="absolute inset-x-0 top-0 h-3 animate-[drop_2.4s_var(--ease-in-out-expo)_infinite] bg-accent" />
+            </span>
+          </a>
+        </Magnetic>
       </motion.div>
 
       <style>{`

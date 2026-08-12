@@ -28,10 +28,10 @@ export default function ProjectCase({ project }: { project: Project }) {
         <div className="md:col-span-4">
           <div className="md:sticky md:top-32">
             <Rise>
-              <p className="numeral text-micro text-accent mb-6">
+              <p className="numeral text-caption text-accent mb-6">
                 {project.index} / {String(projects.length).padStart(2, "0")}
               </p>
-              <h2 className="display text-h3 leading-none">{project.title}</h2>
+              <h2 className="display text-h2">{project.title}</h2>
               <p className="label mt-3">{project.subtitle}</p>
               <p className="label mt-6 text-bone-faint">{project.year}</p>
             </Rise>
@@ -41,7 +41,7 @@ export default function ProjectCase({ project }: { project: Project }) {
                 {project.stack.map((s) => (
                   <li
                     key={s}
-                    className="label text-[0.625rem] tracking-[0.1em] border border-bone/12 px-2 py-1 text-bone-dim"
+                    className="label text-caption tracking-[0.1em] border border-bone/12 px-2 py-1 text-bone-dim"
                   >
                     {s}
                   </li>
@@ -76,13 +76,13 @@ export default function ProjectCase({ project }: { project: Project }) {
                   {/* Values vary from "3" to "fire & poll", so the type has to
                       shrink for the long ones instead of wrapping into a wall. */}
                   <p
-                    className={`numeral leading-none text-bone ${
-                      m.value.length > 6 ? "text-lead" : "text-h3"
+                    className={`numeral text-bone ${
+                      m.value.length > 6 ? "text-body-large" : "text-h3"
                     }`}
                   >
                     {m.value}
                   </p>
-                  <p className="label text-[0.625rem]">{m.label}</p>
+                  <p className="label text-caption">{m.label}</p>
                 </div>
               </Rise>
             ))}
@@ -118,11 +118,11 @@ export default function ProjectCase({ project }: { project: Project }) {
                   />
                   <Rise delay={0.25 + i * 0.12} distance={12}>
                     <div className="py-4 pl-4 md:pl-0 md:pt-5">
-                      <p className="numeral text-micro text-accent">
+                      <p className="numeral text-caption text-accent">
                         {String(i + 1).padStart(2, "0")}
                       </p>
                       <p className="mt-1.5 text-bone">{node.label}</p>
-                      <p className="label mt-1 text-[0.625rem] text-bone-faint">
+                      <p className="label mt-1 text-caption text-bone-faint">
                         {node.note}
                       </p>
                     </div>

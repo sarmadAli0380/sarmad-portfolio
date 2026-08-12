@@ -110,6 +110,8 @@ export default function ParticleField({ reducedMotion }: Props) {
   // feel twitchy; a lerp gives it weight.
   const pointer = useRef(new THREE.Vector3(999, 999, 999));
   const pointerTarget = useRef(new THREE.Vector3(999, 999, 999));
+  // Scratch vector for the world → local conversion, reused every frame.
+  const pointerLocal = useRef(new THREE.Vector3());
 
   useEffect(() => {
     if (reducedMotion) return;
@@ -173,14 +175,26 @@ export default function ParticleField({ reducedMotion }: Props) {
       (state.intensity - mat.uniforms.uIntensity.value) * delta * 2.2;
 
     if (!reducedMotion) {
-      pointer.current.lerp(pointerTarget.current, 1 - Math.pow(0.001, delta));
-      (mat.uniforms.uPointer.value as THREE.Vector3).copy(pointer.current);
-      mat.uniforms.uPointerStrength.value = 0.85;
-
       // A slow yaw keeps the silhouette changing without reading as a turntable.
       group.rotation.y += delta * 0.035;
       group.rotation.x = Math.sin(state.scroll * Math.PI * 2) * 0.13;
       group.position.y = -state.scroll * 0.8;
+
+      pointer.current.lerp(pointerTarget.current, 1 - Math.pow(0.0004, delta));
+
+      /*
+       * The shader compares the pointer against particle positions, which are
+       * in this object's local space — but the pointer arrives in world space,
+       * and this object is rotating and translating every frame. Without
+       * converting, the repulsion lands somewhere other than the cursor and
+       * slides away as the field turns. Transform must happen after the
+       * rotation/position writes above, hence updateMatrixWorld.
+       */
+      group.updateMatrixWorld();
+      pointerLocal.current.copy(pointer.current);
+      group.worldToLocal(pointerLocal.current);
+      (mat.uniforms.uPointer.value as THREE.Vector3).copy(pointerLocal.current);
+      mat.uniforms.uPointerStrength.value = 1.3;
     }
   });
 

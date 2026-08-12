@@ -96,10 +96,7 @@ export default function Loader() {
             className="flex items-end justify-between gap-8"
             exit={{ y: -20, opacity: 0, transition: { duration: 0.5 } }}
           >
-            <span
-              className="numeral text-bone leading-none"
-              style={{ fontSize: "clamp(3rem, 12vw, 9rem)" }}
-            >
+            <span className="numeral text-display text-bone">
               {String(Math.floor(pct)).padStart(3, "0")}
             </span>
             <span className="label mb-2 hidden sm:block">

@@ -75,7 +75,7 @@ export default function Nav() {
                   aria-current={isActive ? "true" : undefined}
                 >
                   <span
-                    className="label text-[0.625rem] transition-all duration-500"
+                    className="label text-caption transition-all duration-500"
                     style={{
                       opacity: isActive ? 1 : 0,
                       transform: `translateX(${isActive ? 0 : 8}px)`,

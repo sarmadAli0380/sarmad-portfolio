@@ -42,10 +42,10 @@ export default function Cursor() {
     };
 
     const loop = () => {
-      // Trailing lerp — the lag is what makes it feel like an object with mass
-      // rather than a second cursor glued to the first.
-      pos.x += (target.x - pos.x) * 0.18;
-      pos.y += (target.y - pos.y) * 0.18;
+      // Enough lag to read as an object with mass, not so much that it feels
+      // like the page is behind you.
+      pos.x += (target.x - pos.x) * 0.3;
+      pos.y += (target.y - pos.y) * 0.3;
       if (dot.current) {
         dot.current.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, -50%)`;
       }
@@ -68,11 +68,15 @@ export default function Cursor() {
       aria-hidden="true"
       className="pointer-events-none fixed left-0 top-0 z-40 flex items-center justify-center"
     >
+      {/*
+        Fixed 72px box scaled with a transform. Animating width/height instead
+        forces layout on every frame of every hover, which is what made this
+        feel sluggish.
+      */}
       <div
-        className="rounded-full border transition-all duration-300 ease-[var(--ease-out-expo)]"
+        className="h-18 w-18 rounded-full border transition-[transform,border-color,background-color] duration-300 ease-[var(--ease-out-expo)]"
         style={{
-          width: label ? 72 : active ? 34 : 10,
-          height: label ? 72 : active ? 34 : 10,
+          transform: `scale(${label ? 1 : active ? 0.47 : 0.14})`,
           borderColor: active ? "var(--color-accent)" : "var(--color-bone-dim)",
           backgroundColor: label
             ? "color-mix(in oklab, var(--color-accent) 14%, transparent)"
@@ -80,7 +84,7 @@ export default function Cursor() {
         }}
       />
       {label && (
-        <span className="label absolute text-bone text-[0.625rem] whitespace-nowrap">
+        <span className="label absolute text-bone text-caption whitespace-nowrap">
           {label}
         </span>
       )}
