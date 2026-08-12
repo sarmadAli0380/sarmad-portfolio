@@ -232,24 +232,11 @@ export const skills = [
   },
   {
     group: "Backend & Data",
-    items: [
-      "PostgreSQL",
-      "MongoDB",
-      "Sequelize",
-      "REST APIs",
-      "JWT Auth",
-      "WebSockets",
-    ],
+    items: ["PostgreSQL", "MongoDB", "REST APIs", "JWT Auth", "WebSockets"],
   },
   {
     group: "Tools",
-    items: [
-      "Git",
-      "Swagger/OpenAPI",
-      "Chrome DevTools Protocol",
-      "Redux Toolkit",
-      "Tailwind CSS",
-    ],
+    items: ["Git", "Chrome DevTools Protocol", "Tailwind CSS"],
   },
 ];
 
