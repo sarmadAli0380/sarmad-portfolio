@@ -54,9 +54,6 @@ export default function ParticleField({ reducedMotion }: Props) {
       uTurbulence: { value: 1 },
       uPointer: { value: new THREE.Vector3(999, 999, 999) },
       uPointerStrength: { value: 0 },
-      // Tap shockwave. Age counts seconds since the tap; negative means idle.
-      uImpulse: { value: new THREE.Vector3(999, 999, 999) },
-      uImpulseAge: { value: -1 },
       uColorBase: { value: new THREE.Color(theme.bone) },
       uColorAccent: { value: new THREE.Color(theme.accent) },
     }),
@@ -121,69 +118,23 @@ export default function ParticleField({ reducedMotion }: Props) {
   // Scratch vector for the world → local conversion, reused every frame.
   const pointerLocal = useRef(new THREE.Vector3());
 
-  /** Tap shockwave state, in world space until it's handed to the shader. */
-  const impulse = useRef(new THREE.Vector3());
-  const impulseAge = useRef(-1);
-
   useEffect(() => {
     if (reducedMotion) return;
-
-    const toWorld = (clientX: number, clientY: number, out: THREE.Vector3) => {
-      const x = (clientX / window.innerWidth) * 2 - 1;
-      const y = -(clientY / window.innerHeight) * 2 + 1;
-      out.set((x * viewport.width) / 2, (y * viewport.height) / 2, 0);
-    };
-
-    /*
-     * Touch has no hover, so the finger only counts while it's down. Mouse and
-     * trackpad keep tracking continuously, which is the behaviour they already
-     * had.
-     *
-     * Every listener here is passive and nothing calls preventDefault, so
-     * scrolling is completely untouched — the field just watches where the
-     * finger is while the page scrolls normally underneath it.
-     */
-    let touchDown = false;
-
     const onMove = (e: PointerEvent) => {
-      if (e.pointerType === "mouse") {
-        toWorld(e.clientX, e.clientY, pointerTarget.current);
-      } else if (touchDown) {
-        toWorld(e.clientX, e.clientY, pointerTarget.current);
-      }
+      if (e.pointerType !== "mouse") return;
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = -(e.clientY / window.innerHeight) * 2 + 1;
+      pointerTarget.current.set(
+        (x * viewport.width) / 2,
+        (y * viewport.height) / 2,
+        0,
+      );
     };
-
-    const onDown = (e: PointerEvent) => {
-      if (e.pointerType !== "mouse") {
-        touchDown = true;
-        toWorld(e.clientX, e.clientY, pointerTarget.current);
-        // Snap rather than lerp on first contact, so the shockwave starts
-        // exactly under the finger instead of wherever the last touch ended.
-        pointer.current.copy(pointerTarget.current);
-      }
-      toWorld(e.clientX, e.clientY, impulse.current);
-      impulseAge.current = 0;
-    };
-
-    const onUp = (e: PointerEvent) => {
-      if (e.pointerType === "mouse") return;
-      touchDown = false;
-      // Let the influence fade out rather than cutting it dead.
-      pointerTarget.current.set(999, 999, 999);
-    };
-
     const onLeave = () => pointerTarget.current.set(999, 999, 999);
-
     window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerdown", onDown, { passive: true });
-    window.addEventListener("pointerup", onUp, { passive: true });
-    window.addEventListener("pointercancel", onUp, { passive: true });
     window.addEventListener("pointerleave", onLeave);
     return () => {
       window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("pointerup", onUp);
-      window.removeEventListener("pointercancel", onUp);
       window.removeEventListener("pointerleave", onLeave);
     };
   }, [viewport.width, viewport.height, reducedMotion]);
@@ -261,21 +212,6 @@ export default function ParticleField({ reducedMotion }: Props) {
       group.worldToLocal(pointerLocal.current);
       (mat.uniforms.uPointer.value as THREE.Vector3).copy(pointerLocal.current);
       mat.uniforms.uPointerStrength.value = 1.3;
-
-      // Shockwave. Ages out after ~1.4s, then goes idle so the shader can skip
-      // the whole branch.
-      if (impulseAge.current >= 0) {
-        impulseAge.current += delta;
-        if (impulseAge.current > 1.4) impulseAge.current = -1;
-        else {
-          pointerLocal.current.copy(impulse.current);
-          group.worldToLocal(pointerLocal.current);
-          (mat.uniforms.uImpulse.value as THREE.Vector3).copy(
-            pointerLocal.current,
-          );
-        }
-      }
-      mat.uniforms.uImpulseAge.value = impulseAge.current;
     }
   });
 
