@@ -81,6 +81,8 @@ uniform float uReveal;
 uniform float uTurbulence;
 uniform float uPointerStrength;
 uniform vec3  uPointer;
+uniform vec3  uImpulse;
+uniform float uImpulseAge;
 
 attribute vec3 aTarget;
 attribute vec3 aSeed;
@@ -130,6 +132,23 @@ void main() {
 
   // Particles caught in the cursor's field brighten with it.
   float pointerHeat = influence;
+
+  /*
+   * Tap shockwave — an expanding shell rather than a second repulsor. A ring
+   * of displacement travels outward from the tap and fades, which reads as the
+   * field being struck. This is what replaces hover on touch: you can't point
+   * at something with a finger without committing, but you can hit it.
+   */
+  if (uImpulseAge >= 0.0) {
+    float radius = uImpulseAge * 5.2;
+    float d = distance(pos, uImpulse);
+    // Gaussian band centred on the expanding radius.
+    float band = exp(-(d - radius) * (d - radius) * 1.6);
+    float fade = exp(-uImpulseAge * 2.4);
+    float wave = band * fade;
+    pos += normalize(pos - uImpulse + 1e-5) * wave * 1.9;
+    pointerHeat = max(pointerHeat, wave);
+  }
 
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
   gl_Position = projectionMatrix * mv;

@@ -160,15 +160,64 @@ const builders: Record<FormationId, Builder> = {
 
 const cache = new Map<FormationId, Float32Array>();
 
+/**
+ * One shared shuffle, applied to every formation.
+ *
+ * The builders write particles in structural order — the fibonacci shell walks
+ * pole to pole, the pipeline walks along its own length. That makes any prefix
+ * of the buffer a *slice* of the shape rather than a sample of it, so drawing
+ * the first 24k of 60k would render the top third of the sphere and nothing
+ * else. Scattering through a fixed permutation makes every prefix a uniform
+ * random subset, which is what lets weaker devices simply draw fewer points.
+ *
+ * The permutation is shared across formations so a given particle still maps to
+ * the same logical particle in every shape, preserving identity through morphs.
+ */
+const permutation = (() => {
+  const perm = new Uint32Array(PARTICLE_COUNT);
+  for (let i = 0; i < PARTICLE_COUNT; i++) perm[i] = i;
+  const rand = rng(0x5caff1e);
+  // Fisher-Yates.
+  for (let i = PARTICLE_COUNT - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    const t = perm[i];
+    perm[i] = perm[j];
+    perm[j] = t;
+  }
+  return perm;
+})();
+
 export function getFormation(id: FormationId): Float32Array {
   const hit = cache.get(id);
   if (hit) return hit;
-  const buf = new Float32Array(PARTICLE_COUNT * 3);
+
+  const raw = new Float32Array(PARTICLE_COUNT * 3);
   // Same seed for every formation so a given particle keeps its identity across
   // morphs — the field reorganizes rather than being replaced.
-  builders[id](buf, PARTICLE_COUNT, rng(0x5eed));
+  builders[id](raw, PARTICLE_COUNT, rng(0x5eed));
+
+  const buf = new Float32Array(PARTICLE_COUNT * 3);
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    const from = i * 3;
+    const to = permutation[i] * 3;
+    buf[to] = raw[from];
+    buf[to + 1] = raw[from + 1];
+    buf[to + 2] = raw[from + 2];
+  }
+
   cache.set(id, buf);
   return buf;
+}
+
+/**
+ * How many of the 60k to actually draw. The buffers are always built at full
+ * size; this only changes the draw range, so it can respond to a resize without
+ * rebuilding anything.
+ */
+export function getRenderCount(width: number, cores: number): number {
+  if (width < 768) return cores <= 4 ? 18000 : 26000;
+  if (width < 1280) return 40000;
+  return PARTICLE_COUNT;
 }
 
 /** Per-particle randoms: morph delay, size variance, colour bias. */
