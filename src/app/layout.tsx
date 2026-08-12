@@ -32,13 +32,45 @@ const mono = Geist_Mono({
   display: "swap",
 });
 
+const SITE_URL = "https://sarmad-portfolio-brown.vercel.app";
+const OG_IMAGE = "/og.png"; // 1200x630, regenerate via /og-preview
+
+/**
+ * Exported from a server component, so every tag below lands in the initial
+ * HTML. Crawlers — LinkedIn's especially — don't run JavaScript, so anything
+ * injected client-side is invisible to them.
+ *
+ * metadataBase is what turns the relative image path into the absolute URL
+ * those crawlers require; without it Next emits a relative src and LinkedIn
+ * silently drops the image.
+ */
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: `${identity.name} — ${identity.role}`,
   description: identity.statement,
+  alternates: { canonical: "/" },
   openGraph: {
     title: `${identity.name} — ${identity.role}`,
     description: identity.statement,
     type: "website",
+    url: "/",
+    siteName: `${identity.name} — ${identity.role}`,
+    locale: "en_US",
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        type: "image/png",
+        alt: `${identity.name} — ${identity.role}`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${identity.name} — ${identity.role}`,
+    description: identity.statement,
+    images: [OG_IMAGE],
   },
   robots: { index: true, follow: true },
 };
