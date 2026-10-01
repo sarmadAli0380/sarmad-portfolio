@@ -3,7 +3,6 @@
 import { Canvas } from "@react-three/fiber";
 import { useEffect, useState } from "react";
 import ParticleField from "./ParticleField";
-import { useReducedMotion } from "@/lib/useReducedMotion";
 
 /**
  * The field sits behind everything, fixed, and never captures pointer events —
@@ -11,7 +10,6 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
  * selectable and links stay clickable.
  */
 export default function Scene() {
-  const reducedMotion = useReducedMotion();
   const [failed, setFailed] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -41,7 +39,7 @@ export default function Scene() {
           onCreated={({ gl }) => gl.setClearColor(0x000000, 0)}
           onError={() => setFailed(true)}
         >
-          <ParticleField reducedMotion={reducedMotion} />
+          <ParticleField />
         </Canvas>
       )}
     </div>

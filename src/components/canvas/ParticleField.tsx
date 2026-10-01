@@ -15,9 +15,7 @@ import { theme } from "@/lib/theme";
 
 const MORPH_DURATION = 1.9; // seconds
 
-type Props = { reducedMotion: boolean };
-
-export default function ParticleField({ reducedMotion }: Props) {
+export default function ParticleField() {
   const points = useRef<THREE.Points>(null);
   const material = useRef<THREE.ShaderMaterial>(null);
   const formation = useStore((s) => s.formation);
@@ -106,10 +104,10 @@ export default function ParticleField({ reducedMotion }: Props) {
     target.needsUpdate = true;
 
     morph.current.current = formation;
-    morph.current.t = reducedMotion ? 1 : 0;
-    morph.current.active = !reducedMotion;
+    morph.current.t = 0;
+    morph.current.active = true;
     uniforms.uMix.value = morph.current.t;
-  }, [formation, geometry, seeds, uniforms, reducedMotion]);
+  }, [formation, geometry, seeds, uniforms]);
 
   // Pointer in world space, smoothed. Raw pointer values make the repulsion
   // feel twitchy; a lerp gives it weight.
@@ -119,7 +117,6 @@ export default function ParticleField({ reducedMotion }: Props) {
   const pointerLocal = useRef(new THREE.Vector3());
 
   useEffect(() => {
-    if (reducedMotion) return;
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       const x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -137,7 +134,7 @@ export default function ParticleField({ reducedMotion }: Props) {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerleave", onLeave);
     };
-  }, [viewport.width, viewport.height, reducedMotion]);
+  }, [viewport.width, viewport.height]);
 
   /*
    * Draw fewer points on smaller/weaker devices. The buffers stay full size —
@@ -167,9 +164,10 @@ export default function ParticleField({ reducedMotion }: Props) {
     // keeps the two from fighting over the same pixels.
     group.position.x = offsetX;
 
-    // Reduced motion keeps the field — it just holds still. Time is what drives
-    // the drift, so freezing time is the whole intervention.
-    if (!reducedMotion) mat.uniforms.uTime.value += delta;
+    // Keep the field alive independently of the page's reduced-motion mode.
+    // It is the site's primary visual and interaction, while UI transitions
+    // elsewhere still honour the visitor's OS preference.
+    mat.uniforms.uTime.value += delta;
 
     if (morph.current.active) {
       morph.current.t += delta / MORPH_DURATION;
@@ -191,28 +189,26 @@ export default function ParticleField({ reducedMotion }: Props) {
     mat.uniforms.uIntensity.value +=
       (state.intensity - mat.uniforms.uIntensity.value) * delta * 2.2;
 
-    if (!reducedMotion) {
-      // A slow yaw keeps the silhouette changing without reading as a turntable.
-      group.rotation.y += delta * 0.035;
-      group.rotation.x = Math.sin(state.scroll * Math.PI * 2) * 0.13;
-      group.position.y = -state.scroll * 0.8;
+    // A slow yaw keeps the silhouette changing without reading as a turntable.
+    group.rotation.y += delta * 0.035;
+    group.rotation.x = Math.sin(state.scroll * Math.PI * 2) * 0.13;
+    group.position.y = -state.scroll * 0.8;
 
-      pointer.current.lerp(pointerTarget.current, 1 - Math.pow(0.0004, delta));
+    pointer.current.lerp(pointerTarget.current, 1 - Math.pow(0.0004, delta));
 
-      /*
-       * The shader compares the pointer against particle positions, which are
-       * in this object's local space — but the pointer arrives in world space,
-       * and this object is rotating and translating every frame. Without
-       * converting, the repulsion lands somewhere other than the cursor and
-       * slides away as the field turns. Transform must happen after the
-       * rotation/position writes above, hence updateMatrixWorld.
-       */
-      group.updateMatrixWorld();
-      pointerLocal.current.copy(pointer.current);
-      group.worldToLocal(pointerLocal.current);
-      (mat.uniforms.uPointer.value as THREE.Vector3).copy(pointerLocal.current);
-      mat.uniforms.uPointerStrength.value = 1.3;
-    }
+    /*
+     * The shader compares the pointer against particle positions, which are
+     * in this object's local space — but the pointer arrives in world space,
+     * and this object is rotating and translating every frame. Without
+     * converting, the repulsion lands somewhere other than the cursor and
+     * slides away as the field turns. Transform must happen after the
+     * rotation/position writes above, hence updateMatrixWorld.
+     */
+    group.updateMatrixWorld();
+    pointerLocal.current.copy(pointer.current);
+    group.worldToLocal(pointerLocal.current);
+    (mat.uniforms.uPointer.value as THREE.Vector3).copy(pointerLocal.current);
+    mat.uniforms.uPointerStrength.value = 1.3;
   });
 
   return (
