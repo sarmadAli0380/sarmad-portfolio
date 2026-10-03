@@ -9,8 +9,8 @@ import { setState } from "@/lib/store";
 /**
  * A section that owns the field while it owns the viewport.
  *
- * This is the whole coupling between scroll and WebGL: crossing the midpoint of
- * a section hands the particle formation over to it. One trigger per section,
+ * This is the whole coupling between scroll and WebGL: the section containing
+ * the viewport midpoint owns the particle formation. One trigger per section,
  * no scroll listeners of our own.
  */
 export default function Section({
@@ -39,12 +39,21 @@ export default function Section({
 
     const trigger = ScrollTrigger.create({
       trigger: el,
-      // Hand over when the section reaches the middle of the viewport, in both
-      // directions — so scrolling back up restores the previous formation.
-      start: "top 55%",
-      end: "bottom 45%",
-      onEnter: claim,
-      onEnterBack: claim,
+      // Adjacent sections meet at the same viewport line. The old 55%/45%
+      // range overlapped ownership, allowing callback order to select a stale
+      // formation after refreshes or a fast reverse scroll.
+      start: "top center",
+      end: "bottom center",
+      invalidateOnRefresh: true,
+      onToggle: (self) => {
+        if (self.isActive) claim();
+      },
+      // Font loading and the opening curtain both trigger a refresh. Reassert
+      // the actual owner afterward instead of retaining whichever trigger ran
+      // most recently during measurement.
+      onRefresh: (self) => {
+        if (self.isActive) claim();
+      },
     });
 
     return () => trigger.kill();

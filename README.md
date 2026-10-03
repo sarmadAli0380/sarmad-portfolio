@@ -1,6 +1,6 @@
 # Portfolio — Sarmad Ali
 
-Personal site for [Sarmad Ali](https://linkedin.com/in/sarmad-ali-3206813a3), AI Engineer.
+Personal site for [Sarmad Ali](https://linkedin.com/in/sarmad-ali-3206813a3), Junior Software Engineer.
 
 A single-page, WebGL-driven portfolio. A 60k-point GPU particle field sits behind the
 page and reforms as you scroll — each project's section drives the field into a shape

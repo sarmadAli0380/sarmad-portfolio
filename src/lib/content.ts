@@ -8,13 +8,13 @@
 
 export const identity = {
   name: "Sarmad Ali",
-  role: "AI Engineer",
+  role: "Junior Software Engineer",
   location: "Lahore, Pakistan",
   email: "asarmad314@gmail.com",
   linkedin: "https://linkedin.com/in/sarmad-ali-3206813a3",
   github: "", // TODO: add if public
   statement:
-    "I'm a MERN developer moving into AI engineering. Right now I build agent systems, MCP tooling and LLM infrastructure at CodeNinja.",
+    "I build production web applications and AI-powered developer tools with TypeScript, React, Next.js, Node.js and MCP.",
 } as const;
 
 /** Formation ids map 1:1 to particle-field geometries in the WebGL scene. */
@@ -158,13 +158,23 @@ export const experience = [
   {
     role: "AI Engineer Intern",
     org: "CodeNinja",
-    period: "Jun 2026 — Present",
+    period: "Jun 2026 — Sep 2026",
     location: "Lahore, Pakistan",
     points: [
-      "I work across the front end and back end of CodeNinja's internal Performance Management System, the tool the company uses to track employee performance.",
-      "I built out the platform's MCP tool coverage, adding more precise tools and introducing an ontology layer to give the domain model some structure.",
-      "I led workflow and system design improvements to make performance tracking less painful to run.",
-      "I also test across the company's internal tooling, including Shikamaru, their project management platform.",
+      "I worked across the front end and back end of the Performance Management System, an internal platform for tracking employee performance.",
+      "I extended the PMS MCP server with more precise tools and an ontology layer, and improved the platform's workflows.",
+      "I authored the implementation plan for multi-manager weighted ratings and an Autopilot agent pipeline, then handed both over to the team at the end of the internship.",
+      "I tested internal tools, diagnosed a default credential mismatch on a no-code platform, wrote a formal bug report, and resolved merge conflicts on the shared PMS repository.",
+    ],
+  },
+  {
+    role: "Full Stack Engineer (Part-time)",
+    org: "Interstate Rankers",
+    period: "Apr 2025 — Dec 2025",
+    location: "Lahore, Pakistan · On-site",
+    points: [
+      "I built and maintained the company's main website and delivered production-ready websites for US-based clients.",
+      "I worked across the full stack with React, Next.js, TypeScript and the MERN stack, taking projects from requirements through deployment.",
     ],
   },
   {
@@ -192,51 +202,68 @@ export const experience = [
 export const certifications = {
   issuer: "Anthropic",
   items: [
-    "Claude with the Anthropic API",
+    "Claude with the API",
     "Claude Code in Action",
-    "Introduction to Agent Skills",
-    "Introduction to Model Context Protocol",
+    "Intro to Agent Skills",
+    "Intro to MCP",
   ],
 };
 
 export const education = {
-  degree: "BS, Computer Science",
+  degree: "BS, Software Engineering",
   org: "University of Central Punjab (UCP)",
   location: "Lahore, Pakistan",
-  year: "2026",
+  year: "",
 };
 
 export const skills = [
   {
-    group: "AI & LLM",
+    group: "Languages",
     items: [
-      "LLM APIs",
-      "AI Agents",
-      "Model Context Protocol",
-      "Prompt Engineering",
-      "Generative AI",
-      "Ollama",
-      "AI Governance",
+      "JavaScript (ES6+)",
+      "TypeScript",
+      "Java",
+      "HTML",
+      "CSS",
     ],
   },
   {
-    group: "Languages & Frameworks",
+    group: "Frontend",
     items: [
-      "TypeScript",
-      "JavaScript",
-      "React.js",
+      "React",
+      "Next.js",
       "React Native",
-      "Node.js",
-      "Express.js",
+      "Responsive UI/UX",
+      "Three.js",
+      "GSAP",
     ],
   },
   {
     group: "Backend & Data",
-    items: ["PostgreSQL", "MongoDB", "REST APIs", "JWT Auth", "WebSockets"],
+    items: [
+      "Node.js",
+      "Express.js",
+      "REST APIs",
+      "MongoDB",
+      "Authentication",
+      "WebSockets",
+      "Third-Party Integrations",
+    ],
   },
   {
-    group: "Tools",
-    items: ["Git", "Chrome DevTools Protocol", "Tailwind CSS"],
+    group: "AI & Engineering",
+    items: [
+      "Claude Code",
+      "Claude",
+      "ChatGPT",
+      "LLM APIs",
+      "Model Context Protocol",
+      "AI Agents",
+      "Automated Testing",
+      "Git & GitHub",
+      "Vercel",
+      "Production Debugging",
+    ],
   },
 ];
 

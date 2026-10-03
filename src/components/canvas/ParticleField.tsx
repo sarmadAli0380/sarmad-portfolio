@@ -10,10 +10,10 @@ import {
   PARTICLE_COUNT,
 } from "@/lib/formations";
 import { readState, useStore } from "@/lib/store";
-import { fragmentShader, vertexShader } from "./shaders";
+import { fragmentShader, MORPH_WINDOW, vertexShader } from "./shaders";
 import { theme } from "@/lib/theme";
 
-const MORPH_DURATION = 1.9; // seconds
+const MORPH_DURATION = 1.35; // seconds
 
 export default function ParticleField() {
   const points = useRef<THREE.Points>(null);
@@ -86,8 +86,8 @@ export default function ParticleField() {
       const mix = morph.current.t;
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const stagger = seeds[i * 3];
-        const start = stagger * 0.55;
-        let m = (mix - start) / 0.45;
+        const start = stagger * (1 - MORPH_WINDOW);
+        let m = (mix - start) / MORPH_WINDOW;
         m = m < 0 ? 0 : m > 1 ? 1 : m;
         m = m * m * (3 - 2 * m);
         const j = i * 3;

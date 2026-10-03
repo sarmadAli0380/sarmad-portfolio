@@ -30,7 +30,7 @@ export default function Hero() {
     }),
   };
 
-  const lines = ["Agent systems,", "MCP tooling,", "LLM infrastructure."];
+  const lines = ["Full-stack products,", "AI-powered tools,", "Production software."];
 
   return (
     <Section

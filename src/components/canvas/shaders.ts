@@ -7,6 +7,13 @@
  * field reorganizes in a wave instead of snapping as one rigid body.
  */
 
+/**
+ * Most particles should begin moving early in the transition. A narrower
+ * window left over half of the field stationary at first, which made every
+ * morph feel rigid before it suddenly accelerated.
+ */
+export const MORPH_WINDOW = 0.82;
+
 /** Ashima Arts simplex noise — public domain. Drives drift and morph turbulence. */
 const simplex = /* glsl */ `
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -95,7 +102,7 @@ void main() {
   // Each particle morphs inside its own window of the global sweep. Particles
   // with a low stagger seed move first; the rest follow, so the transition
   // reads as a wave crossing the field.
-  float window = 0.45;
+  float window = ${MORPH_WINDOW.toFixed(2)};
   float start = aSeed.x * (1.0 - window);
   float m = clamp((uMix - start) / window, 0.0, 1.0);
   m = m * m * (3.0 - 2.0 * m);

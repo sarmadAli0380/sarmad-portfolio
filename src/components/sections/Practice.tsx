@@ -60,7 +60,8 @@ export default function Practice() {
             <span className="text-bone-dim">{education.org}</span>
           </p>
           <p className="label mt-4 text-bone-faint">
-            {education.location} — {education.year}
+            {education.location}
+            {education.year ? ` — ${education.year}` : ""}
           </p>
         </Rise>
       </div>

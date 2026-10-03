@@ -74,7 +74,7 @@ export async function GET() {
               letterSpacing: -2,
             }}
           >
-            Agent systems, MCP tooling,
+            Full-stack products, AI-powered tools,
           </span>
           <span
             style={{
@@ -85,7 +85,7 @@ export async function GET() {
               letterSpacing: -2,
             }}
           >
-            LLM infrastructure.
+            Production software.
           </span>
         </div>
 
@@ -104,7 +104,7 @@ export async function GET() {
               letterSpacing: 1,
             }}
           >
-            AI Engineer — Lahore, Pakistan
+            Junior Software Engineer — Lahore, Pakistan
           </span>
           <div style={{ display: "flex", width: 150, height: 4, backgroundColor: "#FF4D1C" }} />
         </div>
